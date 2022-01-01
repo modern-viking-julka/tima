@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tima/pages/home_page.dart';
 import 'package:tima/pages/settings_page.dart';
 import 'package:tima/pages/testing_page.dart';
+import 'package:tima/pages/timeoverview_page.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -12,7 +13,7 @@ class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
   List<Widget> pageList = <Widget>[
     HomePage(),
-    TestingPage(), //Center(child: Text('Stundenplan')),
+    TimeOverviewPage(), // TestingPage(),
     Center(child: Text('PDF send')),
     SettingsPage(),
   ];
