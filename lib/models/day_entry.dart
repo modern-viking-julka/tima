@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 
 class DayEntry {
   final int? id;
-  DateTime workDay;
-  TimeOfDay startOfWork;
-  TimeOfDay endOfWork;
-  double breakTime;
-  double workingTimeIs;
-  double workingTimeShould;
-  double moreWorkPayed;
-  double moreWorkFreetime;
-  String travelTimePayedKey;
-  double travelTimePayed;
-  double emergencyServiceTime;
-  String absenceReason;
+  final DateTime workDay;
+  final TimeOfDay startOfWork;
+  final TimeOfDay endOfWork;
+  final double breakTime;
+  final double workingTimeIs;
+  final double workingTimeShould;
+  final double moreWorkPayed;
+  final double moreWorkFreetime;
+  final String travelTimePayedKey;
+  final double travelTimePayed;
+  final double emergencyServiceTime;
+  final String absenceReason;
+  final int userId;
+  final int erledigt;
 
   DayEntry({
     this.id,
@@ -29,6 +31,8 @@ class DayEntry {
     required this.travelTimePayed,
     required this.emergencyServiceTime,
     required this.absenceReason,
+    required this.userId,
+    required this.erledigt,
   });
 
   Map<String, dynamic> toMap() => {
@@ -45,6 +49,8 @@ class DayEntry {
         'travelTimePayed': travelTimePayed,
         'emergencyServiceTime': emergencyServiceTime,
         'absenceReason': absenceReason,
+        'userId': userId,
+        'erledigt': erledigt,
       };
 
   factory DayEntry.fromMap(Map<String, dynamic> map) => new DayEntry(
@@ -61,5 +67,7 @@ class DayEntry {
         travelTimePayed: map['travelTimePayed'],
         emergencyServiceTime: map['emergencyServiceTime'],
         absenceReason: map['absenceReason'],
+        userId: map['userId'],
+        erledigt: map['erledigt'],
       );
 }

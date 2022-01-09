@@ -13,8 +13,8 @@ class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
   List<Widget> pageList = <Widget>[
     HomePage(),
-    TimeOverviewPage(), // TestingPage(),
-    Center(child: Text('PDF send')),
+    TimeOverviewPage(),
+    TestingPage(), // Center(child: Text('PDF send')),
     SettingsPage(),
   ];
   @override

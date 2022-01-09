@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:intl/intl.dart';
+import 'package:tima/data/database.dart';
+import 'package:tima/models/day_entry.dart';
 
 class TimeOverviewPage extends StatefulWidget {
   @override
@@ -9,6 +11,11 @@ class TimeOverviewPage extends StatefulWidget {
 }
 
 class _TimeOverviewPageState extends State<TimeOverviewPage> {
+  // Future<List<DayEntry>> entryElements() async {
+  //   return await DBProvider.instance.getDayEntrys('01');
+  // }
+  // List<DayEntry> _elements = DBProvider.instance.getDayEntrys('01');
+
   List _elements = [
     {
       'order': 1,
@@ -134,16 +141,23 @@ class _TimeOverviewPageState extends State<TimeOverviewPage> {
           ),
         ),
         itemBuilder: (c, element) {
-          return Card(
-            elevation: 8.0,
-            margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-            child: Container(
-              child: ListTile(
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                leading: Icon(Icons.event),
-                title: Text(element['name']),
-                trailing: Icon(Icons.arrow_forward),
+          return GestureDetector(
+            onTap: () {
+              print("test click ${element['order']}");
+            },
+            child: Card(
+              clipBehavior: Clip.antiAlias,
+              elevation: 8.0,
+              margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+              child: Container(
+                child: ListTile(
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  // leading: Icon(Icons.event),
+                  title: Text(element['name']),
+                  subtitle: Text('6:30 - 14:30  7,5h'),
+                  trailing: Icon(Icons.arrow_forward),
+                ),
               ),
             ),
           );

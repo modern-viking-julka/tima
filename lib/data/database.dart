@@ -4,6 +4,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tima/models/user.dart';
+import 'package:tima/models/day_entry.dart';
 
 class DBProvider {
   //Singelton method -JP
@@ -18,7 +19,7 @@ class DBProvider {
     String path = join(documentsDirectory.path, "TiMaDB.db");
     return await openDatabase(
       path,
-      version: 2,
+      version: 1,
       //onOpen: (db) {},
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
@@ -34,6 +35,25 @@ class DBProvider {
           weeklyhours INTEGER,
           persnr INTEGER,
           aktiv INTERGER NOT NULL DEFAULT 0
+          )''');
+    await db.execute('''
+        CREATE TABLE DayEntry (
+          id INTEGER PRIMARY KEY,
+          workDay TEXT,
+          startOfWork TEXT,
+          endOfWork TEXT,
+          breakTime REAL,
+          workingTimeIs REAL,
+          workingTimeShould REAL,
+          moreWorkPayed REAL,
+          moreWorkFreetime REAL,
+          travelTimePayedKey TEXT,
+          travelTimePayed REAL,
+          emergencyServiceTime REAL,
+          absenceReason TEXT,
+          userId INTEGER,
+          erledigt INTERGER NOT NULL,
+          FOREIGN KEY(userId) REFERENCES User(id)
           )''');
   }
 
@@ -111,4 +131,18 @@ class DBProvider {
   //   Database db = await instance.database;
   //   await db.rawDelete("Delete * from User");
   // }
+
+  Future<int> newDayEntry(DayEntry newDayEntry) async {
+    Database db = await instance.database;
+    return await db.insert('DayEntry', newDayEntry.toMap());
+  }
+
+  Future<List<DayEntry>> getDayEntrys(String month) async {
+    Database db = await instance.database;
+    var res = await db.query('DayEntry',
+        where: "strftime('%m',workday) IN('$month')");
+    List<DayEntry> list =
+        res.isNotEmpty ? res.map((c) => DayEntry.fromMap(c)).toList() : [];
+    return list;
+  }
 }
