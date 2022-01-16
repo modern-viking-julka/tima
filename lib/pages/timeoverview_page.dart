@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:grouped_list/grouped_list.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
-import 'package:intl/intl.dart';
+import 'package:dart_date/dart_date.dart';
 import 'package:tima/data/database.dart';
 import 'package:tima/models/day_entry.dart';
+import 'package:tima/pages/dayEntry_page.dart';
 
 class TimeOverviewPage extends StatefulWidget {
   @override
@@ -11,158 +11,150 @@ class TimeOverviewPage extends StatefulWidget {
 }
 
 class _TimeOverviewPageState extends State<TimeOverviewPage> {
-  // Future<List<DayEntry>> entryElements() async {
-  //   return await DBProvider.instance.getDayEntrys('01');
-  // }
-  // List<DayEntry> _elements = DBProvider.instance.getDayEntrys('01');
+  DateTime selectedDate = DateTime.now();
+  String currentMothStr = DateTime.now().format('MMMM yyyy', 'de_DE');
 
-  List _elements = [
-    {
-      'order': 1,
-      'name': 'Mi. 1.12.2021',
-      'group': 'Kalenderwoche 48 Dezember 2021'
-    },
-    {
-      'order': 2,
-      'name': 'Do. 2.12.2021',
-      'group': 'Kalenderwoche 48 Dezember 2021'
-    },
-    {
-      'order': 3,
-      'name': 'Fr. 3.12.2021',
-      'group': 'Kalenderwoche 48 Dezember 2021'
-    },
-    {
-      'order': 4,
-      'name': 'Sa. 4.12.2021',
-      'group': 'Kalenderwoche 48 Dezember 2021'
-    },
-    {
-      'order': 5,
-      'name': 'So. 5.12.2021',
-      'group': 'Kalenderwoche 48 Dezember 2021'
-    },
-    {
-      'order': 6,
-      'name': 'Mo. 6.12.2021',
-      'group': 'Kalenderwoche 49 Dezember 2021'
-    },
-    {
-      'order': 7,
-      'name': 'Di. 7.12.2021',
-      'group': 'Kalenderwoche 49 Dezember 2021'
-    },
-    {
-      'order': 8,
-      'name': 'Mi. 8.12.2021',
-      'group': 'Kalenderwoche 49 Dezember 2021'
-    },
-    {
-      'order': 9,
-      'name': 'Do. 9.12.2021',
-      'group': 'Kalenderwoche 49 Dezember 2021'
-    },
-    {
-      'order': 10,
-      'name': 'Fr. 10.12.2021',
-      'group': 'Kalenderwoche 49 Dezember 2021'
-    },
-    {
-      'order': 11,
-      'name': 'Sa. 11.12.2021',
-      'group': 'Kalenderwoche 49 Dezember 2021'
-    },
-    {
-      'order': 12,
-      'name': 'So. 12.12.2021',
-      'group': 'Kalenderwoche 49 Dezember 2021'
-    },
-  ];
-
-  DateTime? selectedDate = DateTime.now().toLocal();
-  final DateFormat formatter = DateFormat('MMM yyyy');
-  String currentMothStr =
-      DateFormat('MMM yyyy').format(DateTime.now().toLocal());
-  // int currentMonth = 1;
-
-//testing grouper_list -JP(31.12.2021)
   @override
   Widget build(BuildContext context) {
+    var _dayEntrys = fetchDayEntrysFromDatabase(context);
     return Scaffold(
-      appBar: AppBar(
-          title: const Text(
-            'Einträge',
-            style: TextStyle(color: Colors.blue),
-          ),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextButton(
-                child: Text(currentMothStr),
-                style: TextButton.styleFrom(
-                    primary: Colors.black,
-                    backgroundColor: Colors.blue,
-                    onSurface: Colors.blue),
-                onPressed: () {
-                  showMonthPicker(
-                    context: context,
-                    firstDate: DateTime(DateTime.now().year - 1, 5),
-                    lastDate: DateTime(DateTime.now().year + 1, 9),
-                    initialDate: selectedDate ?? DateTime.now(),
-                    locale: Locale("de"),
-                  ).then((date) {
-                    if (date != null) {
-                      setState(() {
-                        selectedDate = date;
-                        currentMothStr =
-                            DateFormat('MMM yyyy', 'de').format(date);
+        appBar: AppBar(
+            title: Text(
+              currentMothStr,
+              style: TextStyle(color: Colors.blue),
+            ),
+            actions: <Widget>[
+              Padding(
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      showMonthPicker(
+                        context: context,
+                        firstDate: DateTime(DateTime.now().year - 1, 1),
+                        lastDate:
+                            DateTime(DateTime.now().year, DateTime.now().month),
+                        initialDate: selectedDate,
+                        locale: Locale('de', 'DE'),
+                      ).then((date) {
+                        if (date != null) {
+                          setState(() {
+                            selectedDate = date;
+                            currentMothStr = date.format('MMMM yyyy', 'de_DE');
+                          });
+                        }
                       });
-                    }
-                  });
-                },
-              ),
-            ),
-          ],
-          backgroundColor: Colors.black),
-      body: GroupedListView<dynamic, String>(
-        elements: _elements,
-        groupBy: (element) => element['group'],
-        groupComparator: (value1, value2) => value2.compareTo(value1),
-        itemComparator: (item1, item2) =>
-            item1['order'].compareTo(item2['order']),
-        order: GroupedListOrder.ASC,
-        useStickyGroupSeparators: false,
-        groupSeparatorBuilder: (String value) => Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            value,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-        ),
-        itemBuilder: (c, element) {
-          return GestureDetector(
-            onTap: () {
-              print("test click ${element['order']}");
-            },
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              elevation: 8.0,
-              margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-              child: Container(
-                child: ListTile(
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  // leading: Icon(Icons.event),
-                  title: Text(element['name']),
-                  subtitle: Text('6:30 - 14:30  7,5h'),
-                  trailing: Icon(Icons.arrow_forward),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
+                    },
+                    child: Icon(
+                      Icons.calendar_today,
+                      size: 26.0,
+                      color: Colors.blue,
+                    ),
+                  )),
+            ],
+            backgroundColor: Colors.black),
+        body: Container(
+          padding: const EdgeInsets.all(16.0),
+          color: Colors.white,
+          child: FutureBuilder<List<DayEntry>>(
+              future: _dayEntrys,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            //open DayEntry edit form if id not null, else insert form!
+                            // print("test click ${snapshot.data![index].id}");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute<bool>(
+                                  builder: (context) => DayEntryPage(
+                                      dayEntryId: snapshot.data![index].id,
+                                      dayDate: snapshot.data![index].workDay),
+                                )).then((value) {
+                              if (value!) {
+                                print('Eintrag gespeichert!');
+                                // if Data was saved there is need of setState! -JP(16.1.2022)
+                              } else {
+                                print('Bearbeitung abgebrochen!...');
+                              }
+                            });
+                          },
+                          child: Card(
+                            clipBehavior: Clip.antiAlias,
+                            elevation: 8.0,
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 6.0),
+                            child: Container(
+                              child: ListTile(
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 20.0, vertical: 10.0),
+                                // leading: Icon(Icons.event),
+                                title: Text(snapshot.data![index].workDay
+                                    .format('E dd.MM.yyyy', 'de_DE')),
+                                subtitle: Text(
+                                    '${snapshot.data![index].startOfWork.format(context)} - ${snapshot.data![index].endOfWork.format(context)} (${snapshot.data![index].workingTimeIs}h) Pause: ${snapshot.data![index].breakTime}h'),
+                                trailing: Icon(Icons.arrow_forward),
+                              ),
+                            ),
+                          ),
+                        );
+                      });
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+                }
+                return Container(
+                  alignment: AlignmentDirectional.center,
+                  child: const CircularProgressIndicator(),
+                );
+              }),
+        ));
+  }
+
+  Future<List<DayEntry>> fetchDayEntrysFromDatabase(
+      BuildContext context) async {
+    List<DayEntry> _testList = [];
+
+    final firstDayOfMonth = DateTime(selectedDate.year, selectedDate.month, 1);
+    final lastDayOfMonth =
+        DateTime(selectedDate.year, selectedDate.month + 1, 0);
+
+    var i = firstDayOfMonth.day;
+    var iMax = lastDayOfMonth.day; //show the whole month -JP(16.1.2022)
+    // var iMax = selectedDate.day;
+    DayEntry newDayEntry;
+
+    while (i <= iMax) {
+      //get the DayEntry out of database if exists -JP(16.1.2022)
+      DayEntry? dbDayEntry = await DBProvider.instance
+          .getDayEntry(DateTime(selectedDate.year, selectedDate.month, i));
+      //if dbDayEntry is not null and hast data then use it for displaying the info -JP(16.1.2022)
+      if (dbDayEntry != null) {
+        newDayEntry = dbDayEntry;
+      } else {
+        newDayEntry = DayEntry(
+          id: null,
+          workDay: DateTime(selectedDate.year, selectedDate.month, i, 0, 0, 0),
+          startOfWork: TimeOfDay(hour: 6, minute: 30),
+          endOfWork: TimeOfDay(hour: 14, minute: 30),
+          breakTime: 0.5,
+          workingTimeIs: 7.5,
+          workingTimeShould: 7.5,
+          moreWorkPayed: 0,
+          moreWorkFreetime: 0,
+          travelTimePayedKey: '',
+          travelTimePayed: 0,
+          emergencyServiceTime: 0,
+          absenceReason: '',
+          userId: 1,
+          erledigt: 0,
+        );
+      }
+      _testList.add(newDayEntry);
+      i++;
+    }
+
+    return _testList;
   }
 }

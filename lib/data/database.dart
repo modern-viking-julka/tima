@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tima/models/user.dart';
 import 'package:tima/models/day_entry.dart';
+import 'package:dart_date/dart_date.dart';
 
 class DBProvider {
   //Singelton method -JP
@@ -137,12 +138,27 @@ class DBProvider {
     return await db.insert('DayEntry', newDayEntry.toMap());
   }
 
-  Future<List<DayEntry>> getDayEntrys(String month) async {
+  Future<int> updateDayEntry(DayEntry newDayEntry) async {
     Database db = await instance.database;
+    return await db.update('DayEntry', newDayEntry.toMap(),
+        where: "id = ?", whereArgs: [newDayEntry.id]);
+  }
+
+  // Future<List<DayEntry>> getDayEntrys(String month) async {
+  //   Database db = await instance.database;
+  //   var res = await db.query('DayEntry',
+  //       where: "strftime('%m',workday) IN('$month')");
+  //   List<DayEntry> list =
+  //       res.isNotEmpty ? res.map((c) => DayEntry.fromMap(c)).toList() : [];
+  //   return list;
+  // }
+
+  Future<DayEntry?> getDayEntry(DateTime workDay) async {
+    Database db = await instance.database;
+    // DateTime whereDate = DateTime(workDay.year, workDay.month, workDay.day);
+    String whereDateStr = workDay.format('yyyy-MM-dd 00:00:00', 'de_DE');
     var res = await db.query('DayEntry',
-        where: "strftime('%m',workday) IN('$month')");
-    List<DayEntry> list =
-        res.isNotEmpty ? res.map((c) => DayEntry.fromMap(c)).toList() : [];
-    return list;
+        where: 'DateTime(date(workday)) = ?', whereArgs: [whereDateStr]);
+    return res.isNotEmpty ? DayEntry.fromMap(res.first) : null;
   }
 }
