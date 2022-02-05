@@ -65,7 +65,7 @@ class _TimeOverviewPageState extends State<TimeOverviewPage> {
                         return GestureDetector(
                           onTap: () {
                             //open DayEntry edit form if id not null, else insert form!
-                            // print("test click ${snapshot.data![index].id}");
+                            print("test click ${snapshot.data![index].id}");
                             Navigator.push(
                                 context,
                                 MaterialPageRoute<bool>(
@@ -76,6 +76,7 @@ class _TimeOverviewPageState extends State<TimeOverviewPage> {
                               if (value!) {
                                 print('Eintrag gespeichert!');
                                 // if Data was saved there is need of setState! -JP(16.1.2022)
+                                setState(() {});
                               } else {
                                 print('Bearbeitung abgebrochen!...');
                               }
@@ -84,6 +85,9 @@ class _TimeOverviewPageState extends State<TimeOverviewPage> {
                           child: Card(
                             clipBehavior: Clip.antiAlias,
                             elevation: 8.0,
+                            // color: snapshot.data![index].id == null
+                            //     ? Colors.red
+                            //     : Colors.green,
                             margin: EdgeInsets.symmetric(
                                 horizontal: 10.0, vertical: 6.0),
                             child: Container(
@@ -91,11 +95,17 @@ class _TimeOverviewPageState extends State<TimeOverviewPage> {
                                 contentPadding: EdgeInsets.symmetric(
                                     horizontal: 20.0, vertical: 10.0),
                                 // leading: Icon(Icons.event),
+                                leading: Container(
+                                  width: 10,
+                                  color: snapshot.data![index].id == null
+                                      ? Colors.red
+                                      : Colors.green,
+                                ),
                                 title: Text(snapshot.data![index].workDay
                                     .format('E dd.MM.yyyy', 'de_DE')),
                                 subtitle: Text(
                                     '${snapshot.data![index].startOfWork.format(context)} - ${snapshot.data![index].endOfWork.format(context)} (${snapshot.data![index].workingTimeIs}h) Pause: ${snapshot.data![index].breakTime}h'),
-                                trailing: Icon(Icons.arrow_forward),
+                                // trailing: Icon(Icons.arrow_forward),
                               ),
                             ),
                           ),

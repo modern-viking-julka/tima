@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
 class DayEntry {
-  final int? id;
-  final DateTime workDay;
-  final TimeOfDay startOfWork;
-  final TimeOfDay endOfWork;
-  final double breakTime;
-  final double workingTimeIs;
-  final double workingTimeShould;
-  final double moreWorkPayed;
-  final double moreWorkFreetime;
-  final String travelTimePayedKey;
-  final double travelTimePayed;
-  final double emergencyServiceTime;
-  final String absenceReason;
-  final int userId;
-  final int erledigt;
+  int? id;
+  DateTime workDay;
+  TimeOfDay startOfWork;
+  TimeOfDay endOfWork;
+  double breakTime;
+  double workingTimeIs;
+  double workingTimeShould;
+  double moreWorkPayed;
+  double moreWorkFreetime;
+  String travelTimePayedKey;
+  double travelTimePayed;
+  double emergencyServiceTime;
+  String absenceReason;
+  int userId;
+  int erledigt;
 
   DayEntry({
     this.id,
@@ -55,18 +55,24 @@ class DayEntry {
 
   factory DayEntry.fromMap(Map<String, dynamic> map) => new DayEntry(
         id: map['id'],
-        workDay: map['workDay'],
-        startOfWork: map['startOfWork'],
-        endOfWork: map['endOfWork'],
-        breakTime: map['breakTime'],
-        workingTimeIs: map['workingTimeIs'],
-        workingTimeShould: map['workingTimeShould'],
-        moreWorkPayed: map['moreWorkPayed'],
-        moreWorkFreetime: map['moreWorkFreetime'],
-        travelTimePayedKey: map['travelTimePayedKey'],
-        travelTimePayed: map['travelTimePayed'],
-        emergencyServiceTime: map['emergencyServiceTime'],
-        absenceReason: map['absenceReason'],
+        workDay: DateTime.parse(map['workDay']),
+        startOfWork: TimeOfDay.fromDateTime(DateTime.parse(map['startOfWork'])),
+        endOfWork: TimeOfDay.fromDateTime(DateTime.parse(map['endOfWork'])),
+        breakTime: map['breakTime'] != null ? map['breakTime'] : 0,
+        workingTimeIs: map['workingTimeIs'] != null ? map['workingTimeIs'] : 0,
+        workingTimeShould:
+            map['workingTimeShould'] != null ? map['workingTimeShould'] : 0,
+        moreWorkPayed: map['moreWorkPayed'] != null ? map['moreWorkPayed'] : 0,
+        moreWorkFreetime:
+            map['moreWorkFreetime'] != null ? map['moreWorkFreetime'] : 0,
+        travelTimePayedKey:
+            map['travelTimePayedKey'] != null ? map['travelTimePayedKey'] : '',
+        travelTimePayed:
+            map['travelTimePayed'] != null ? map['travelTimePayed'] : 0,
+        emergencyServiceTime: map['emergencyServiceTime'] != null
+            ? map['emergencyServiceTime']
+            : 0,
+        absenceReason: map['absenceReason'] != null ? map['absenceReason'] : '',
         userId: map['userId'],
         erledigt: map['erledigt'],
       );
